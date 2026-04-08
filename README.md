@@ -19,11 +19,11 @@
 
 **These are the different parts that are included in the notes.**
 
-![image.png](image.png)
+![image.png](images/image.png)
 
 **RFLAGS register in 64-bit is the zero extended EFLAGS register**
 
-![image.png](image%201.png)
+![image.png](images/image%201.png)
 
 # CPU Feature Identification
 
@@ -31,15 +31,15 @@
 - CPUID takes its argument in EAX and sometimes ECX.
 - The output is stored in EAX, EBX, ECX and EDX.
 
-![image.png](image%202.png)
+![image.png](images/image%202.png)
 
-![image.png](image%203.png)
+![image.png](images/image%203.png)
 
 **Example: Check if features like SGX, SMEP & SMAP are enabled; EAX=7 and ECX=0**
 
 → Bit 2: SGX, Bit 7: SMEP, Bit 20: SMAP
 
-![image.png](image%204.png)
+![image.png](images/image%204.png)
 
 **Note: A hypervisor can spoof these values.**
 
@@ -47,7 +47,7 @@
 
 Intel Processor can execute in several modes. Everything starts in Real Mode.
 
-![image.png](image%205.png)
+![image.png](images/image%205.png)
 
 - If in Real Mode, an SMI# (System Management Interrupt) put the CPU in System Management Mode which an isolated mode that even the most privilege ring can’t tamper with.
 - Modern OS’s operate in Protected Mode.
@@ -57,7 +57,7 @@ Intel Processor can execute in several modes. Everything starts in Real Mode.
 
 AMD provides a clearer finite state machine of the cpu modes.
 
-![image.png](image%206.png)
+![image.png](images/image%206.png)
 
 # Model Specific Registers (MSRs)
 
@@ -65,17 +65,17 @@ AMD provides a clearer finite state machine of the cpu modes.
 
 - RDMSR is a privileged instruction
 
-![image.png](image%207.png)
+![image.png](images/image%207.png)
 
 - WRMSR is a privileged instruction
 
-![image.png](image%208.png)
+![image.png](images/image%208.png)
 
 **Example: Moving to Long Mode (setting the LME bit in the EFFER register)**
 
 Bit 8: LME, Bit 10: LMA (to check if we’re in Long Mode)
 
-![image.png](image%209.png)
+![image.png](images/image%209.png)
 
 There’s a condition in the comment column about Bit 20 and 29 in the value returned by CPUID in the EDX register.
 
@@ -85,7 +85,7 @@ There’s a condition in the comment column about Bit 20 and 29 in the value ret
 
 This is how intel envisions the privilege rings. But in reality the kernel runs as if there’s no level 1 or 2.
 
-![image.png](image%2010.png)
+![image.png](images/image%2010.png)
 
 From the manual:
 
@@ -96,15 +96,15 @@ space (called the **linear address space**) into smaller protected address space
 
 The full diagram but it is rather complicated.
 
-![image.png](image%2011.png)
+![image.png](images/image%2011.png)
 
 A less complicated version is this
 
-![image.png](image%2012.png)
+![image.png](images/image%2012.png)
 
 This is closer (in 64bit space there’ll be more than 4Gb in the memory size):
 
-![image.png](image%2013.png)
+![image.png](images/image%2013.png)
 
 - “There is no mode bit to disable segmentation”
 - “To locate a byte in a particular segment, a logical address (also called a far pointer) must be provided. A logical address consists of a segment selector and an
@@ -113,7 +113,7 @@ offset.”
 
 - Far Pointer = Near Pointer + Segment Selector.
 
-![image.png](image%2014.png)
+![image.png](images/image%2014.png)
 
 **A logical address is translated into a linear address that gets translated into a virtual address which is then translated into a physical address.**
 
@@ -121,15 +121,15 @@ offset.”
 
 - A logical address is translated to a linear address via table lookup.
 
-![image.png](image%2015.png)
+![image.png](images/image%2015.png)
 
 - The full translation steps from a linear address to a physical address (Paging notes will come later)
 
-![image.png](image%2016.png)
+![image.png](images/image%2016.png)
 
 - **Intel more or less disabled segmentation except for some few things: CS, ES, SS & DS are considered = 0.**
 
-![image.png](image%2017.png)
+![image.png](images/image%2017.png)
 
 **Reality in 64-bit mode:**
 
@@ -139,23 +139,23 @@ offset.”
 
 - **Segment Selector** is a 16-bit data structure that selects a data structure from two tables.
 
-![image.png](image%2018.png)
+![image.png](images/image%2018.png)
 
 - Segment Registers can be read/written with MOV.
 
-![image.png](image%2019.png)
+![image.png](images/image%2019.png)
 
 - Reading and Writing can also be done with PUSH & POP
 
 **Note: there’s no POP CS**
 
-![image.png](image%2020.png)
+![image.png](images/image%2020.png)
 
-![image.png](image%2021.png)
+![image.png](images/image%2021.png)
 
 - **Segment Registers** contain a hidden part which acts as a cache for the info of the lookup table so that it doesn’t get fetched from RAM everytime.
 
-![image.png](image%2022.png)
+![image.png](images/image%2022.png)
 
 Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is harcoded.
 
@@ -167,7 +167,7 @@ Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is h
 - LDTR behaves like a segment selector i.e. Only the Segment Selector Part is visible.
 - Entries in GDT are Segment Descriptor Sturctures
 
-![image.png](image%2023.png)
+![image.png](images/image%2023.png)
 
 - GDTR = 10 bytes = Linear Address (8 bytes) + Table limit i.e. size (2 bytes)
 - Reading is done with LGDT, Writing is done with SGDT
@@ -181,7 +181,7 @@ Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is h
 
 “Each segment has a segment descriptor, which specifies the size of the segment, the access rights and privilege level for the segment, the segment type, and the location of the first byte of the segment in the linear address space (called the base address of the segment). The offset part of the logical address is added to the base address for the segment to locate a byte within the segment. The base address plus the offset thus forms a linear address in the processor’s linear address space.
 
-![image.png](image%2024.png)
+![image.png](images/image%2024.png)
 
 → L flag (Bit 21): specifies if this is a 64bit segment or not. (go back to AMD state machine CS.L=0 or 1)
 
@@ -206,7 +206,7 @@ Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is h
 
 - **Types of non-system segments:**
 
-![image.png](image%2025.png)
+![image.png](images/image%2025.png)
 
 - Expand-Down is for Stack Segments to allow them to grow towards lower addresses.
     - Read-Only and Expand-Down can’t be used for stack segments
@@ -218,7 +218,7 @@ Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is h
 
 - **Types of System segments: “Note that system descriptors in IA-32e mode are 16 bytes instead of 8 bytes.”**
 
-![image.png](image%2026.png)
+![image.png](images/image%2026.png)
 
 **Note: Windows, in its KGDTENRY64 struct combines S and Type flags into a 5-bit fields of 32 values.**
 
@@ -228,7 +228,7 @@ Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is h
     - “D” (default opcode size) flag. Specifies whether an overloaded opcode is interpreted as dealing with 16-bit or 32-bit register/memory sizes. Take for example opcode 25, if D==0 then it’s followed by imm16 (2 bytes). If D==1, it’s followed by imm32 (4 bytes).
     - “The instruction prefix 66H can be used to select an operand size other than the default”
 
-![image.png](image%2027.png)
+![image.png](images/image%2027.png)
 
 - In the case of Stack Stegment:
     - “B” (Big) Flag: specifies whether implicit stack pointer usage (pop, push, call) moves Stack Pointer by 16 bits (B == 0) or by 32 bites (B == 1).
@@ -245,11 +245,11 @@ Since in 64bit mode **CS, ES, SS & DS** are considered = 0, the hidden part is h
 
 **Note: Only the fields in the next figure are used in 64bit mode (documentation says G flag is not used since Limit is not used)**
 
-![image.png](image%2028.png)
+![image.png](images/image%2028.png)
 
 For the System types in 64-bit mode, Segment Descriptors are expanded to 16 bytes to now they can how 64-bit addresses.
 
-![image.png](image%2029.png)
+![image.png](images/image%2029.png)
 
 **Current Privilege Level:**
 
@@ -270,28 +270,28 @@ For the System types in 64-bit mode, Segment Descriptors are expanded to 16 byte
 
 - A Call Gate is one way to transition to another segment at different privilege level.
 
-![image.png](image%2030.png)
+![image.png](images/image%2030.png)
 
 → To transition from CPL 3 to CPL 0, use a CALL instruction with a far pointer that had a Segment Selector, that pointed at a Call Gate Segment Descriptor.
 
-![image.png](image%2031.png)
+![image.png](images/image%2031.png)
 
 **Returning from a Call through a Call Gate:**
 
 - An inter-privilege **far CALL** through a Call Gate pushes SS:RSP and CS:RIP.
 - **far RET** can pop those values from the stack to return back from the inter-privilege **far CALL**
 
-![image.png](image%2032.png)
+![image.png](images/image%2032.png)
 
 **far CALL instruction: privilege changes only if Segment Selector points to a Call Gate.**
 
-![image.png](image%2033.png)
+![image.png](images/image%2033.png)
 
-![image.png](image%2034.png)
+![image.png](images/image%2034.png)
 
 **JUMP also supports a far pointer but doesn’t change privilege level.**
 
-![image.png](image%2035.png)
+![image.png](images/image%2035.png)
 
 # Interrupts
 
@@ -315,7 +315,7 @@ task is suspended while the processor executes an interrupt or exception handler
 
 **Saving state in 64-bit mode, IRET pops it back and resumes execution.**
 
-![image.png](image%2036.png)
+![image.png](images/image%2036.png)
 
 **Software Generated Interrupts**
 
@@ -334,17 +334,17 @@ task is suspended while the processor executes an interrupt or exception handler
 
 - Task Register (TR) is similar in form to LDTR. It can be manipulated with STR/LTR.
 
-![image.png](image%2037.png)
+![image.png](images/image%2037.png)
 
 “Task gates are not supported in IA32e mode. On privilege level changes, stack segment selectors are not read from the TSS. Instead, they are set to NULL.”
 
 TSS Descriptor is identical to LDT Descriptor.
 
-![image.png](image%2038.png)
+![image.png](images/image%2038.png)
 
 The format of TSS is the following
 
-![image.png](image%2039.png)
+![image.png](images/image%2039.png)
 
 - The 64-bit value at the bottom RSP0 is used as the stack address in which the state is pushed when an interrupts moves execution to ring 0. **Changing to ring n will use RSPn.**
 - IST “Interrupt Stack Table” is a list of Stack Addresses to be chosen from for an interrupt.
@@ -357,30 +357,30 @@ The format of TSS is the following
 
 **→ IDTR has the same format as GDTR. (set/read with LIDT/SIDT)**
 
-![image.png](image%2040.png)
+![image.png](images/image%2040.png)
 
 How IDTR is used
 
-![image.png](image%2041.png)
+![image.png](images/image%2041.png)
 
 - The IDT is an array of ≤ 256 16-byte entries.
 - 0 to 31 are reserved for architecture-specific exceptions and interrupts.
 - 32 to 255 are used defined.
 
-![image.png](image%2042.png)
+![image.png](images/image%2042.png)
 
 Examples of exceptions and interrupts.
 
-![image.png](image%2043.png)
+![image.png](images/image%2043.png)
 
-![image.png](image%2044.png)
+![image.png](images/image%2044.png)
 
 - The descriptors in the IDT describe one of two types:
     - Interrupt Gate
     - Trap Gate
 - “The only difference between an interrupt gate and a trap gate is the way the processor handles the IF flag in the EFLAGS register.”
 
-![image.png](image%2045.png)
+![image.png](images/image%2045.png)
 
 - Type 1110: Interrupt Gate
 - Type 1111: Trap Gate
@@ -399,7 +399,7 @@ Examples of exceptions and interrupts.
 
 - There’s a condition that makes SIDT privileged: User-Mode Instruction Prevention (Bit 11 of CR4)
 
-![image.png](image%2046.png)
+![image.png](images/image%2046.png)
 
 → Same for SGDT, SLDT.
 
@@ -408,15 +408,15 @@ Examples of exceptions and interrupts.
 - System Calls are another way to transfer control from a segment to another segment at another privilege level.
 - IA_EFFER msr contains a bit about SYSTCALL but the instruction doesn’t depend on it.
 
-![image.png](image%2047.png)
+![image.png](images/image%2047.png)
 
 - SYSCALL depends on Bit 11 in CPUID with argument in the next figure.
 
-![image.png](image%2048.png)
+![image.png](images/image%2048.png)
 
 **What happens when SYSCALL**
 
-![image.png](image%2049.png)
+![image.png](images/image%2049.png)
 
 → RSP is not saved automatically. Either Kernel or userspace SYSCALL handler is responsible for that.
 
@@ -424,7 +424,7 @@ Examples of exceptions and interrupts.
 
 **What happens when SYSRET**
 
-![image.png](image%2050.png)
+![image.png](images/image%2050.png)
 
 → Whichever side saved RSP is responsible for storing it.
 
@@ -432,11 +432,11 @@ Examples of exceptions and interrupts.
 
 **Layout of the MSRs specified before**
 
-![image.png](image%2051.png)
+![image.png](images/image%2051.png)
 
 **The RPL is forced to ring 3 when SYSRET is called.**
 
-![image.png](image%2052.png)
+![image.png](images/image%2052.png)
 
 → CS.DPL is set to 3.
 
@@ -447,7 +447,7 @@ Examples of exceptions and interrupts.
     - userspace GS base is mapped to IA32_GS_BASE.
     - Useful for SYSCALL handlers as well as Interrupts handlers
 
-![image.png](image%2053.png)
+![image.png](images/image%2053.png)
 
 → if CPUID.07H.0H:EBX.FSGSBASE[Bit 0] = 1 && CR4.FSGSBASE = 1 , then the processor supports the instruction (non-privileged):
 
@@ -460,7 +460,7 @@ These can be used to read/write FS & GS base addresses without using RDMSR/WRMSR
 
 # Read the Time Stamp Counter (RDTSC)
 
-![image.png](image%2054.png)
+![image.png](images/image%2054.png)
 
 - Set to 0 when processor reset, incremented on each clock cycle.
 - It can also be read from IA32_TIME_STAMP_COUNTER (0x10) MSR.
@@ -476,19 +476,19 @@ These can be used to read/write FS & GS base addresses without using RDMSR/WRMSR
 
 → When paging is enabled a linear address is the same as a virtual address.
 
-![image.png](image%2055.png)
+![image.png](images/image%2055.png)
 
 - Physical memory is divided into fixed size chunks called **pages.**
 - Memory Management Unit (MMU) is the part of hardware in a processor that uses the current execution mode, segmentation information and paging information to perform the overall process of translating logical address to physical addresses.
 - The Translation Lookaside Buffer (TLB) is a cache of Virtual to Physical mappings the MMU uses.
 
-![image.png](image%2056.png)
+![image.png](images/image%2056.png)
 
 → **source**: [https://en.wikipedia.org/wiki/Memory_management_unit](https://en.wikipedia.org/wiki/Memory_management_unit)
 
 - There are 5 Control Registers (CR0-CR4) which are used for paging control as well as enable/disabling other features.
 
-![image.png](image%2057.png)
+![image.png](images/image%2057.png)
 
 - CR0:
     - Protection enabled (PE, bit 0) : must be set to get into Protected Mode from the default reset state of Real Mode.
@@ -512,39 +512,39 @@ These can be used to read/write FS & GS base addresses without using RDMSR/WRMSR
 
 **The big picture**
 
-![image.png](image%2058.png)
+![image.png](images/image%2058.png)
 
 - MAXPHYADDR : **maximum number of physical address bits** that a specific CPU supports.
 
-![image.png](image%2059.png)
+![image.png](images/image%2059.png)
 
 **4KB Paging, 32-bit Mode**
 
-![image.png](image%2060.png)
+![image.png](images/image%2060.png)
 
 → Page Tables are page aligned.
 
 **4MB Paging 32-bit Mode**
 
-![image.png](image%2061.png)
+![image.png](images/image%2061.png)
 
 **64-bit 4-level paging (4KB pages)**
 
-![image.png](image%2062.png)
+![image.png](images/image%2062.png)
 
 **Note**: instead of hardcoded “40”, the figure should say MAXPHYADDR-12 
 
 **64-bit 3-level paging (2MB pages)**
 
-![image.png](image%2063.png)
+![image.png](images/image%2063.png)
 
 **64-bit 2-level paging (1 GB pages)**
 
-![image.png](image%2064.png)
+![image.png](images/image%2064.png)
 
 **CR3 with 4-Level Paging**
 
-![image.png](image%2065.png)
+![image.png](images/image%2065.png)
 
 → M is **MAXPHYADDR.**
 
@@ -554,41 +554,41 @@ These can be used to read/write FS & GS base addresses without using RDMSR/WRMSR
 
 - When context switches, the page table address in CR3 changes.
 
-![image.png](image%2066.png)
+![image.png](images/image%2066.png)
 
 **PMLE4 with 4-Level Paging**
 
-![image.png](image%2067.png)
+![image.png](images/image%2067.png)
 
-![image.png](image%2068.png)
+![image.png](images/image%2068.png)
 
 **Note: Memory permissions are restrictive meaning that if the DX bit set to 1 at some level then all subsequent pages are non executable.**
 
 **PDPTE with 4-Level paging**
 
-![image.png](image%2069.png)
+![image.png](images/image%2069.png)
 
-![image.png](image%2070.png)
+![image.png](images/image%2070.png)
 
-![image.png](image%2071.png)
+![image.png](images/image%2071.png)
 
 → **PS bit specifies whether PDPTE points at 1-GB page or a page directory.**
 
 **PDE with 4-Level paging**
 
-![image.png](image%2072.png)
+![image.png](images/image%2072.png)
 
-![image.png](image%2073.png)
+![image.png](images/image%2073.png)
 
-![image.png](image%2074.png)
+![image.png](images/image%2074.png)
 
-![image.png](image%2075.png)
+![image.png](images/image%2075.png)
 
 **PTE with 4-Level paging**
 
-![image.png](image%2076.png)
+![image.png](images/image%2076.png)
 
-![image.png](image%2077.png)
+![image.png](images/image%2077.png)
 
 **Canonical Addresses**
 
@@ -597,7 +597,7 @@ These can be used to read/write FS & GS base addresses without using RDMSR/WRMSR
 
 **→ PS:** The next figure hurts the eye.
 
-![image.png](image%2078.png)
+![image.png](images/image%2078.png)
 
 source: [https://bottomupcs.com/ch06s02.html](https://bottomupcs.com/ch06s02.html)
 
@@ -607,7 +607,7 @@ source: [https://bottomupcs.com/ch06s02.html](https://bottomupcs.com/ch06s02.htm
 - When a Page Fault occurs, the address that the MMU was attempting to translate to physical address is put into the CR2 register.
 - Page Fault is the type of faults to push an error code so the page fault handler is responsible for interpreting the error code.
 
-![image.png](image%2079.png)
+![image.png](images/image%2079.png)
 
 - Recoverable Page faults:
     - Page is “page out”; swapped to disk.
@@ -645,21 +645,21 @@ source: [https://bottomupcs.com/ch06s02.html](https://bottomupcs.com/ch06s02.htm
 
 → All Debug register accesses require CPL == 0
 
-![image.png](image%2080.png)
+![image.png](images/image%2080.png)
 
 **Note:** There is a DR0 as well.
 
 **Debug Control Register**
 
-![image.png](image%2081.png)
+![image.png](images/image%2081.png)
 
-![image.png](image%2082.png)
+![image.png](images/image%2082.png)
 
 **Debug Status Register**
 
-![image.png](image%2083.png)
+![image.png](images/image%2083.png)
 
-![image.png](image%2084.png)
+![image.png](images/image%2084.png)
 
 **When a Hardware Breakpoint is triggered**
 
@@ -671,9 +671,9 @@ source: [https://bottomupcs.com/ch06s02.html](https://bottomupcs.com/ch06s02.htm
 - When the RF is set “The processor then ignores instruction breakpoints for the duration of the next instruction.” “The processor then automatically clears this flag after the instruction returned to has been successfully executed.”
 - To set the flag, a debug interrupt handler must manipulate the RFLAGS stored on the stack and then use IRETQ (**POPFQ does not transfer RF from the stack into RFLAGS**) under any circumstances
 
-![image.png](image%2085.png)
+![image.png](images/image%2085.png)
 
-![image.png](image%2086.png)
+![image.png](images/image%2086.png)
 
 **Trap Flag**
 
@@ -697,7 +697,7 @@ source: [https://bottomupcs.com/ch06s02.html](https://bottomupcs.com/ch06s02.htm
 - Most OSes set IOPL to 0.
 - STI/CLI for setting and clearing the Interrupt Flag in RFLAGS also are only allowed if CPL <= IOPL.
 
-![image.png](image%2087.png)
+![image.png](images/image%2087.png)
 
 → DX is 16 bits so it allows to access all 2^16 ports but imm8 allows only 2^8.
 
@@ -705,13 +705,13 @@ source: [https://bottomupcs.com/ch06s02.html](https://bottomupcs.com/ch06s02.htm
 
 → if you’re in a 16 bit segment it’s 16 bit, if you’re in a 32/64 bit segment it’s 32 bit. But you can override it with an operand size instruction prefix.
 
-![image.png](image%2088.png)
+![image.png](images/image%2088.png)
 
 → Same caveats as IN
 
 **Which port corresponds to what**
 
-![image.png](image%2089.png)
+![image.png](images/image%2089.png)
 
 # References
 
