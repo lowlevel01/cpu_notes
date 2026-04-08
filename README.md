@@ -1,5 +1,20 @@
 # x86 cpu notes
 
+# Outline of the notes
+
+- [The Big Picture](#the-big-picture)
+- [CPU Feature Identification](#cpu-feature-identification)
+- [Processor Execution Modes](#processor-execution-modes)
+- [Model Specific Registers (MSRs)](#model-specific-registers-msrs)
+- [Privilege Rings and Segmentation](#privilege-rings-and-segmentation)
+- [Interrupts](#interrupts)
+- [System Calls](#system-calls)
+- [Read the Time Stamp Counter (RDTSC)](#read-the-time-stamp-counter-rdtsc)
+- [Paging](#paging)
+- [Debugging](#debugging)
+- [Port I/O](#port-io)
+- [References](#references)
+
 # The Big Picture
 
 **These are the different parts that are included in the notes.**
