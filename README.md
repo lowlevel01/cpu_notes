@@ -1,4 +1,4 @@
-# x86 cpu notes
+# x86-64 cpu notes
 
 # Outline of the notes
 
